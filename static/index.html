@@ -1,220 +1,213 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <meta property="og:title" content="API Statis Data Wilayah Indonesia" />
-  <meta property="og:description" content="Contoh penggunaan API statis data wilayah Indonesia menggunakan Javascript fetch API." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://emsifa.github.io/api-wilayah-indonesia" />
-  <meta property="og:image" content="https://emsifa.github.io/api-wilayah-indonesia/img/og-image.png" />
+<title>API Wilayah Indonesia – Digilunar Redesign</title>
 
-  <title>API Statis Data Wilayah Indonesia</title>
+<!-- Bootstrap 5 -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/4.5.6/css/ionicons.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
-  <link rel="stylesheet" href="css/style.css">
+<!-- Vue 3 -->
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js" defer></script>
-  <script src="js/app.js" defer></script>
+<style>
+  body {
+    background: #f8f9fa;
+  }
+  .card {
+    border-radius: 14px;
+  }
+  pre {
+    background: #1e1e1e;
+    color: #e6e6e6;
+    border-radius: 10px;
+    padding: 15px;
+  }
+  footer {
+    margin-top: 80px;
+  }
+</style>
+
 </head>
 <body>
-  <div id="app" class="container-fluid my-3 my-md-5">
-    <div class="row d-flex align-items-center justify-content-center" style="height: 100vh">
-      <div class="col-lg-7 col-md-7 col-sm-10 col-11">
-        <header>
-          <h3 class="text-muted"><strong>API STATIS</strong></h3>
-          <h2 class="mt-0 mb-0 text-info">
-            DATA WILAYAH INDONESIA
-          </h2>
-          <p class="mt-3 mb-4 text-muted">
-            Contoh penggunaan <a href="https://www.github.com/emsifa/api-wilayah-indonesia" class="underline">API statis data wilayah Indonesia <sup><i class="icon ion-logo-github text-info"></i></sup></a> menggunakan Javascript <code>fetch</code> API.
-          </p>
-        </header>
+
+<div id="app" class="container py-5">
+
+  <h2 class="fw-bold text-center mb-4">
+    🌍 API Wilayah Indonesia  
+    <div class="text-primary fs-4">Redesign oleh Digilunar</div>
+  </h2>
+
+  <p class="text-center text-muted mb-5">
+    Contoh penggunaan API Wilayah Indonesia (Provinsi → Kabupaten → Kecamatan → Kelurahan)
+    dengan tampilan modern & interaktif.
+  </p>
 
 
-        <div class="row">
-          <!-- PROVINSI -->
-          <div class="col-md-12">
-            <div class="card mb-4">
-              <div v-if="fetchProvincesCode" class="card-body bg-secondary">
-                <div class="row">
-                  <div class="col-md-6">
-                    <h5 class="text-warning mb-3 mt-0">Fetch List Provinsi</h4>
-                    <pre v-html="fetchProvincesCode" class="mb-0 text-white"></pre>
-                  </div>
-                  <div class="col-md-6">
-                    <h5 class="text-warning mb-3 mt-0 mt-md-0 mt-3">Response</h5>
-                    <div v-if="fetchingProvinces" class="text-white d-flex justify-content-center align-items-center" style="max-height: 140px;">
-                      <i class="icon ion-md-refresh spinning d-inline-block text-fade-50" style="font-size: 2rem;"></i>
-                    </div>
-                    <pre v-if="!fetchingProvinces" v-html="responseProvinces" class="text-white" style="max-height: 140px;"></pre>
-                  </div>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="form-group mb-0">
-                  <label for="">Pilih Provinsi</label>
-                  <select v-model="provinceId" class="form-control">
-                    <option value=""></option>
-                    <option v-for="prov in provinces" :key="prov.id" :value="prov.id">{{ prov.name }}</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- KAB/KOTA -->
-          <div class="col-md-12 d-none unhide-on-mounted">
-            <transition name="fade">
-              <div v-if="fetchRegenciesCode" class="card mb-4">
-                <div class="card-body bg-secondary">
-                  <div class="row">
-                    <div class="col-md-6">
-                      <h5 class="text-warning mb-3 mt-0">Fetch List Kab/Kota</h4>
-                      <pre v-html="fetchRegenciesCode" class="mb-0 text-white"></pre>
-                    </div>
-                    <div class="col-md-6">
-                      <h5 class="text-warning mb-3 mt-0 mt-md-0 mt-3">Response</h5>
-                      <div v-if="fetchingRegencies" class="text-white d-flex justify-content-center align-items-center" style="max-height: 140px;">
-                        <i class="icon ion-md-refresh spinning d-inline-block text-fade-50" style="font-size: 2rem;"></i>
-                      </div>
-                      <pre v-if="!fetchingRegencies" v-html="responseRegencies" class="text-white" style="max-height: 140px;"></pre>
-                    </div>
-                  </div>
-                </div>
-                <div v-if="provinceId" class="card-body">
-                  <div class="form-group mb-0">
-                    <label for="">Pilih Kab/Kota</label>
-                    <select v-model="regencyId" class="form-control">
-                      <option value=""></option>
-                      <option v-for="reg in regencies" :key="reg.id" :value="reg.id">{{ reg.name }}</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-            </transition>
-          </div>
-        </div>
-        <!-- /row -->
-
-        <div class="row">
-          <!-- KECAMATAN -->
-          <div class="col-md-12 d-none unhide-on-mounted">
-            <transition name="fade">
-              <div v-if="fetchDistrictsCode" class="card mb-4">
-                <div class="card-body bg-secondary">
-                  <div class="row">
-                    <div class="col-md-6">
-                      <h5 class="text-warning mb-3 mt-0">Fetch List Kecamatan</h5 class="mb-3 mt-0">
-                      <pre v-html="fetchDistrictsCode" class="mb-0 text-white"></pre>
-                    </div>
-                    <div class="col-md-6">
-                      <h5 class="text-warning mb-3 mt-0 mt-md-0 mt-3">Response</h5>
-                      <div v-if="fetchingDistricts" class="text-white d-flex justify-content-center align-items-center" style="max-height: 140px;">
-                        <i class="icon ion-md-refresh spinning d-inline-block text-fade-50" style="font-size: 2rem;"></i>
-                      </div>
-                      <pre v-if="!fetchingDistricts" v-html="responseDistricts" class="text-white" style="max-height: 140px;"></pre>
-                    </div>
-                  </div>
-                </div>
-                <div v-if="regencyId" class="card-body">
-                  <div class="form-group mb-0">
-                    <label for="">Pilih Kecamatan</label>
-                    <select v-model="districtId" class="form-control">
-                      <option value=""></option>
-                      <option v-for="dist in districts" :key="dist.id" :value="dist.id">{{ dist.name }}</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-            </transition>
-          </div>
-          <!-- KELURAHAN -->
-          <div class="col-md-12 d-none unhide-on-mounted">
-            <transition name="fade">
-              <div v-if="fetchVillagesCode" class="card mb-4">
-                <div class="card-body bg-secondary">
-                  <div class="row">
-                    <div class="col-md-6">
-                      <h5 class="text-warning mb-3 mt-0">Fetch List Kelurahan</h5>
-                      <pre v-html="fetchVillagesCode" class="mb-0 text-white"></pre>
-                    </div>
-                    <div class="col-md-6">
-                      <h5 class="text-warning mb-3 mt-0 mt-md-0 mt-3">Response</h5>
-                      <div v-if="fetchingVillages" class="text-white d-flex justify-content-center align-items-center" style="max-height: 140px;">
-                        <i class="icon ion-md-refresh spinning d-inline-block text-fade-50" style="font-size: 2rem;"></i>
-                      </div>
-                      <pre v-if="!fetchingVillages" v-html="responseVillages" class="text-white" style="max-height: 140px;"></pre>
-                    </div>
-                  </div>
-                </div>
-                <div v-if="districtId" class="card-body">
-                  <div class="form-group mb-0">
-                    <label for="">Pilih Kelurahan</label>
-                    <select v-model="villageId" class="form-control">
-                      <option value=""></option>
-                      <option v-for="vill in villages" :key="vill.id" :value="vill.id">{{ vill.name }}</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-            </transition>
-          </div>
-        </div>
-        <!-- /row -->
-
-        <footer class="mb-4">
-          <div class="row d-flex d-sm-flex d-md-none">
-            <transition name="fade">
-              <div v-if="completed" class="col-12 text-center text-muted mb-4">
-                Selengkapnya
-                <br>
-                <i class="icon ion-md-arrow-down"></i>
-                <br>
-                <a href="" class="d-inline-block text-info" style="font-size: 5rem; margin-top: -24px;">
-                  <strong>
-                    <i class="icon ion-logo-github"></i>
-                  </strong>
-                </a>
-              </div>
-            </transition>
-            <div class="col-12 text-center">
-              <p class="text-muted m-0">
-                &copy; 2019
-                -
-                <a href="https://www.facebook.com/em.sifa" class="text-info">Muhammad Syifa</a>
-                <span class="text-fade-50">|</span>
-                <span>Powered by <a href="https://pages.github.com/" class="text-info">GitHub Page</a></span>
-              </span>
-            </div>
-          </div>
-          <div class="row d-none d-sm-none d-md-flex">
-            <div class="col-md-6">
-              <p class="text-muted m-0">
-                &copy; 2019
-                -
-                <a href="https://www.facebook.com/em.sifa" class="text-info">Muhammad Syifa</a>
-                <span class="text-fade-50">|</span>
-                <span>Powered by <a href="https://pages.github.com/" class="text-info">GitHub Page</a></span>
-              </p>
-            </div>
-            <transition name="slide">
-              <div v-if="completed" class="col-md-6 text-right text-muted">
-                Selengkapnya ada di
-                <a href="https://www.github.com/emsifa/api-wilayah-indonesia" class="text-info">
-                  <strong>
-                    GitHub
-                    <i class="icon ion-md-arrow-forward"></i>
-                  </strong>
-                </a>
-              </div>
-            </transition>
-          </div>
-        </footer>
-      </div>
+  <!-- ===================== PROVINSI ===================== -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Pilih Provinsi</h5>
+      <select class="form-select" v-model="provinsiId" @change="loadKabupaten">
+        <option value="">-- pilih provinsi --</option>
+        <option v-for="p in provinsi" :value="p.id">{{ p.name }}</option>
+      </select>
+    </div>
+    <div class="card-footer">
+      <small class="text-muted">GET /province</small>
     </div>
   </div>
+
+  <pre v-if="provinsiId">{{ responseProvinsi }}</pre>
+
+
+  <!-- ===================== KABUPATEN ===================== -->
+  <div class="card shadow-sm mb-4" v-if="kabupaten.length > 0">
+    <div class="card-body">
+      <h5 class="card-title">Pilih Kabupaten/Kota</h5>
+      <select class="form-select" v-model="kabupatenId" @change="loadKecamatan">
+        <option value="">-- pilih kabupaten/kota --</option>
+        <option v-for="k in kabupaten" :value="k.id">{{ k.name }}</option>
+      </select>
+    </div>
+    <div class="card-footer">
+      <small class="text-muted">GET /regency/{{ provinsiId }}</small>
+    </div>
+  </div>
+
+  <pre v-if="kabupatenId">{{ responseKabupaten }}</pre>
+
+
+  <!-- ===================== KECAMATAN ===================== -->
+  <div class="card shadow-sm mb-4" v-if="kecamatan.length > 0">
+    <div class="card-body">
+      <h5 class="card-title">Pilih Kecamatan</h5>
+      <select class="form-select" v-model="kecamatanId" @change="loadKelurahan">
+        <option value="">-- pilih kecamatan --</option>
+        <option v-for="k in kecamatan" :value="k.id">{{ k.name }}</option>
+      </select>
+    </div>
+    <div class="card-footer">
+      <small class="text-muted">GET /district/{{ kabupatenId }}</small>
+    </div>
+  </div>
+
+  <pre v-if="kecamatanId">{{ responseKecamatan }}</pre>
+
+
+  <!-- ===================== KELURAHAN ===================== -->
+  <div class="card shadow-sm mb-4" v-if="kelurahan.length > 0">
+    <div class="card-body">
+      <h5 class="card-title">Pilih Kelurahan</h5>
+      <select class="form-select" v-model="kelurahanId">
+        <option value="">-- pilih kelurahan --</option>
+        <option v-for="k in kelurahan" :value="k.id">{{ k.name }}</option>
+      </select>
+    </div>
+    <div class="card-footer">
+      <small class="text-muted">GET /village/{{ kecamatanId }}</small>
+    </div>
+  </div>
+
+  <pre v-if="kelurahanId">{{ responseKelurahan }}</pre>
+
+
+  <!-- ================ FOOTER ================ -->
+  <footer class="text-center text-muted">
+    <p class="mb-1">&copy; 2025 – Data Wilayah Indonesia</p>
+    
+    <p class="mb-1">
+      API by:  
+      <a href="https://github.com/emsifa/api-wilayah-indonesia" target="_blank">EMSIFA</a>
+    </p>
+
+    <p class="fw-bold text-primary">
+      Redesain oleh Digilunar  
+      <br>
+      <a href="https://instagram.com/digilunar" target="_blank">@digilunar</a>
+    </p>
+  </footer>
+
+</div>
+
+
+
+<script>
+const API = "https://www.emsifa.com/api-wilayah-indonesia/api";
+
+const app = Vue.createApp({
+  data() {
+    return {
+      provinsi: [],
+      kabupaten: [],
+      kecamatan: [],
+      kelurahan: [],
+
+      provinsiId: "",
+      kabupatenId: "",
+      kecamatanId: "",
+      kelurahanId: "",
+
+      responseProvinsi: "",
+      responseKabupaten: "",
+      responseKecamatan: "",
+      responseKelurahan: ""
+    };
+  },
+
+  mounted() {
+    // load provinsi
+    fetch(`${API}/provinces.json`)
+      .then(r => r.json())
+      .then(data => {
+        this.provinsi = data;
+        this.responseProvinsi = JSON.stringify(data, null, 2);
+      });
+  },
+
+  methods: {
+    loadKabupaten() {
+      this.kabupaten = [];
+      this.kecamatan = [];
+      this.kelurahan = [];
+
+      fetch(`${API}/regencies/${this.provinsiId}.json`)
+        .then(r => r.json())
+        .then(data => {
+          this.kabupaten = data;
+          this.responseKabupaten = JSON.stringify(data, null, 2);
+        });
+    },
+
+    loadKecamatan() {
+      this.kecamatan = [];
+      this.kelurahan = [];
+
+      fetch(`${API}/districts/${this.kabupatenId}.json`)
+        .then(r => r.json())
+        .then(data => {
+          this.kecamatan = data;
+          this.responseKecamatan = JSON.stringify(data, null, 2);
+        });
+    },
+
+    loadKelurahan() {
+      this.kelurahan = [];
+
+      fetch(`${API}/villages/${this.kecamatanId}.json`)
+        .then(r => r.json())
+        .then(data => {
+          this.kelurahan = data;
+          this.responseKelurahan = JSON.stringify(data, null, 2);
+        });
+    }
+  }
+});
+
+app.mount("#app");
+</script>
+
 </body>
 </html>
